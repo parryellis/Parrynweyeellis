@@ -1,0 +1,64 @@
+---
+title: "Project Template"
+author: "MBAC611 -- Advanced Data Analysis"
+date: "`r Sys.Date()`"
+bibliography: paper.bib
+biblio-style: apalike
+link-citations: yes
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, message = FALSE, warning = FALSE)
+```
+
+You may use whatever headers you like. Here are some generic examples.
+
+## Introduction
+
+Begin with an initial, eye-popping, ear-splitting, etc. statement: the catch, the hook.
+
+- Motivation
+
+- Relevant literature
+
+- What to accomplish
+
+- Organization of the report
+
+## Models
+
+Ways of thinking, formation of hypotheses, building on previous work, new thoughts and insights. Remember the statistics can only go so far as building an antecedent probability that assesses the capatibility of hypotheses (refutable theories) with the data at hand. If you are having a difficult time generating questions for deliberation, [read this chapter in Foote's _Probabilistic Reasoning_](https://wgfoote.github.io/book-probabilistic-reasoning/questions-to-live-by.html) to get started. 
+
+- DAGs to reveal causal paths, the many confounds. Use the models in @McelreathStatisticalRethinkingBayesian2020 .
+
+- Behavioral models such as economic optimization, reduced forms, mediation and moderation.
+
+- Resolving the causal models. Remember the four models we discussed way back? Find and resolve the confounds. List the confounds.
+
+- Commentary, for example: We make Golems and Robots (see @CollinPinch1998 and @CapekRUR1921 ). We will take great care not to repeat the mistakes of the past (@amrheinScientistsRiseStatistical2019).
+
+## Data
+
+This is the infamous `table one` that describes the data.
+
+- Source. for example, [Gap Minder](https://www.gapminder.org/data/) with any descriptions and additional citations.
+
+- Relevancy to the resolved causal models.
+
+- Issues and assumptions
+
+- Summaries of the data including percentiles, max, min, Tukey's fences for outliers, `GGally::ggpairs()` plots, types of data (categorical, continuous, discrete, ordered)
+
+- Commentary
+
+## There will be more!
+
+## References
+
+You can use a bibtex JSON file to list your many useful references.
+
+

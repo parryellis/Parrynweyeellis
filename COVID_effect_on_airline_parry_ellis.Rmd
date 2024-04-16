@@ -1,0 +1,482 @@
+---
+title: "COVID-19 VS AIRLINE INDUSTRY"
+author: "Parry-Nweye Ellis"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+link-citations: yes
+biblio-style: apalike
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, message = FALSE, warning = FALSE)
+```
+
+
+## Introduction
+
+The world is very different in these present times as we can all see, with the event of the COVID-19 pandemic. Stepping outside is like living through an episode of resident evil "an invisible enemy as it has been called", people wearing masks as they go about their daily activities. Businesses across all industries were affected, due to the lock down. The aviation industry was not exempted as travel bans were dished out by countries and the airspace saw a drastic reduction in flights unlike ever before. These saw an incredible decline in their customer base as airlines had to figure out new ways to retain and serve their customers. There were huge debts accrued due to customer attrition from loyalty programs and canceled fights just to mention a few.
+
+![ ](flight covid.jpg)
+
+- Motivation
+
+The reason for this analysis is the: 
+
+1. Need to minimize customer attrition
+2. Devaluation of frequent flier mileage points
+3. Poor presentation of loyalty programs for frequent fliers
+4. Need to calculate the safest number of people to fly in order to reduce the viral load per flight.
+5. Best possible ways to mitigate in flight COVID-19
+
+![ ](r.jpeg)
+
+- Relevant literature
+
+The COVID-19 pandemic has had a big impact on the aviation industry due to travel restriction there is a slump in demand among travelers.
+
+Significant reductions in traveler numbers have resulted in flights being off or planes flying empty between airfields, that successively massively reduced revenues for airlines and compelled several airlines to put off staff or declare bankruptcy. Some have tried to avoid refunding canceled visits so as to diminish their losses, airplane makers and airport operators have conjointly arranged  off employees. Consistent with some commentators, the succeeding crisis is that the worst ever encountered within the history of the aviation industry.
+
+No airline was spared in the event of this, Delta Air Lines, Alaska Airlines, Jet Blue Airways, American Airlines, Southwest Airlines, United Airlines, Hawaiian Airlines, Allegiant Air, Frontier Airlines, Spirit Airlines within and outside the United States.
+
+This affected all the key success factors of running a airline. When the sole purpose of running a business is halted for any cause, it threatens the sustainability of the business. To be successful, an airline must be effective in four general areas: 
+1) attracting customers 
+2) managing its fleet 
+3) managing its people
+4) managing its finances
+
+- Organization of the report
+
+The occurrence of the COVID-19 pandemic, was sudden and abrupt and unimaginable, it had parents and elderly family members saying they had not seen anything like it in their life time. Many people lost their lives, the world and its economies had come to a sudden stop. US stock market was particularly affected by the pandemic due to improper preparation although some top guns in the stock market that were aware, quickly sold their stocks which caused the stock market experience a dramatic drop in value of both ETF and JETS. JETS has provided a total return of -27.1%, well below the Russell 1000's total return of 21.9% over the past 12 months, as of December 2, 2020. Shares of airline operators were broadly and in a few cases strongly lower. 
+
+We would consider only household names to further reduce the scope of our analysis and make it more accurate. The airlines we are analyzing include; Delta, Spirit, Southwest, Jet Blue, American.  
+
+Our analysis would be based on certain customer classifications, gender, price sensitivity, type of travel, airline flier status. 
+
+The below analysis is for the showing the stock trade (ETF Exchange Trade Fund)  .i.e. the is a basket of securities you buy or sell through a brokerage firm on a stock exchange. It is a collection of different stocks airline stocks listed above displaying its trend throughout the COVID-19 and clearly displaying the dip in March indicated by the outliers. 
+
+## Models
+
+Wall street was having a bad season as airlines and cruise operators, among the hardest hit by the coronavirus pandemic, also fell. The S&P 1500 airlines index fell 2.6%, while Royal Caribbean Cruises Ltd dropped 2.4% and Carnival Corp tumbled 6.2%. 
+
+![ ](wallstreet.jpg)
+```{r}
+library(quantmod)
+library(PerformanceAnalytics)
+library(ggplot2)
+library(reshape2)
+library(iClick)
+library(plyr)
+library(scales)
+#--------------------Data---------------------
+mdate <- "2024-02-03"
+getSymbols(Symbols = symbols, 
+           src = "yahoo", 
+           index.class = "POSIXct",
+           from = start_date, 
+           to = end_date, 
+           adjust = adjustment)
+
+surveys_complete <- read_csv("data/surveys_complete.csv")
+
+#Create Calendar Returns Table Easily 
+cal_rets <- table.CalendarReturns(stock_ret, digits = 1, as.perc = TRUE )
+#Drop unnecessary columns
+cal_rets$monthly.returns = NULL
+
+df = data.frame(cal_rets)
+#--------------------Box Plot---------------------
+#generic version
+boxplot(df)
+
+#Aggregate By Year or Month
+cal_rets$group <- row.names(cal_rets)
+cal_rets.m <- melt(cal_rets, id.vars = "group")
+
+#Choose variable for month aggregation
+bp <- ggplot(cal_rets.m, aes(group, value, fill=group)) +
+  geom_boxplot(alpha = 0.5, varwidth = TRUE) +
+  theme(legend.position = "none") +
+  ggtitle("Delta Air Lines, Inc.
+NYSE: DAL") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  stat_summary(fun=mean, geom="point", shape=15, size=2, color="red", fill="red") +
+  labs(x=NULL, y=NULL) +
+  #Add % to labels
+  scale_y_continuous(labels = function(x) paste0(x,".00%")) +
+  
+  #Customize theme
+  theme(
+    panel.background = element_rect(fill= "lightblue",
+                                    color = "lightblue",
+                                    size = 0.5, linetype = "solid"),
+   panel.grid.major = element_line(size = 0.5, linetype = 'solid',
+                                   color = "white"),
+   panel.grid.minor = element_line(size = 0.25, linetype = 'solid',
+                                   color = "white"))
+
+
+```
+install.packages("performanceanalytics, dependencies = True)
+```{r}
+ggplot(data = surveys_complete, aes(x = weight, y = hindfoot_length)) + geom_point()
+library(quantmod)
+library(PerformanceAnalytics)
+library(ggplot2)
+library(reshape2)
+library(iClick)
+library(plyr)
+library(scales)
+#--------------------Data---------------------
+mdate <- "2024-02-03"
+stock_data <- getSymbols.yahoo("SAVE", From = mdate, to = Sys.Date(), auto.assign=F)[,4] 
+stock_ret <- periodReturn(stock_data, period='monthly', type='log')
+
+#Create Calendar Returns Table Easily 
+cal_rets <- table.CalendarReturns(stock_ret, digits = 1, as.perc = TRUE )
+#Drop unnecessary columns
+cal_rets$monthly.returns = NULL
+
+df = data.frame(cal_rets)
+#--------------------Box Plot---------------------
+#generic version
+boxplot(df)
+
+#Aggregate By Year or Month
+cal_rets$group <- row.names(cal_rets)
+cal_rets.m <- melt(cal_rets, id.vars = "group")
+
+#Choose variable for month aggregation
+bp <- ggplot(data = surveys_complete, aes(x = weight, y = hindfoot_length)) +
+    geom_point()
+
+ggplot(cal_rets.m, aes(group, value, fill=group)) +
+  geom_boxplot(alpha = 0.5, varwidth = TRUE) +
+  theme(legend.position = "none") +
+  ggtitle("Spirit Airlines Incorporated
+NYSE: SAVE") +
+  theme(plot.title = element_text(hjust = 0.2)) +
+  stat_summary(fun=mean, geom="point", shape=15, size=2, color="red", fill="red") +
+  labs(x=NULL, y=NULL) +
+  #Add % to labels
+  scale_y_continuous(labels = function(x) paste0(x,".00%")) +
+  
+  #Customize theme
+  theme(
+    panel.background = element_rect(fill= "lightblue",
+                                    color = "lightblue",
+                                    size = 0.5, linetype = "solid"),
+   panel.grid.major = element_line(size = 0.5, linetype = 'solid',
+                                   color = "white"),
+   panel.grid.minor = element_line(size = 0.25, linetype = 'solid',
+                                   color = "white"))
+bp
+```
+
+
+
+```{r}
+library(quantmod)
+library(PerformanceAnalytics)
+library(ggplot)
+library(reshape2)
+library(iClick)
+library(plyr)
+library(scales)
+#--------------------Data---------------------
+mdate <- "2024-02-03"
+stock_data <- getSymbols.yahoo("LUV", From = mdate, to = Sys.Date(), auto.assign=F)[,4] 
+stock_ret <- periodReturn(stock_data, period='monthly', type='log')
+
+#Create Calendar Returns Table Easily 
+cal_rets <- table.CalendarReturns(stock_ret, digits = 1, as.perc = TRUE )
+#Drop unnecessary columns
+cal_rets$monthly.returns = NULL
+
+df = data.frame(cal_rets)
+#--------------------Box Plot---------------------
+#generic version
+boxplot(df)
+
+#Aggregate By Year or Month
+cal_rets$group <- row.names(cal_rets)
+cal_rets.m <- melt(cal_rets, id.vars = "group")
+
+#Choose variable for month aggregation
+bp <- ggplot(cal_rets.m, aes(group, value, fill=group)) +
+  geom_boxplot(alpha = 0.5, varwidth = TRUE) +
+   
+  
+  #Customize theme
+  theme(
+    panel.background = element_rect(fill= "lightblue",
+                                    color = "lightblue",
+                                    size = 0.5, linetype = "solid"),
+   panel.grid.major = element_line(size = 0.5, linetype = 'solid',
+                                   color = "white"),
+   panel.grid.minor = element_line(size = 0.25, linetype = 'solid',
+                                   color = "white"))
+bp
+```
+
+
+```{r}
+library(quantmod)
+library(PerformanceAnalytics)
+library(ggplot2)
+library(reshape2)
+library(iClick)
+library(plyr)
+library(scales)
+#--------------------Data---------------------
+mdate <- "2020-02-03"
+stock_data <- getSymbols.yahoo("JBLU", From = mdate, to = Sys.Date(), auto.assign=F)[,4] 
+stock_ret <- periodReturn(stock_data, period='monthly', type='log')
+
+#Create Calendar Returns Table Easily 
+cal_rets <- table.CalendarReturns(stock_ret, digits = 1, as.perc = TRUE )
+#Drop unnecessary columns
+cal_rets$monthly.returns = NULL
+
+df = data.frame(cal_rets)
+#--------------------Box Plot---------------------
+#generic version
+boxplot(df)
+
+#Aggregate By Year or Month
+cal_rets$group <- row.names(cal_rets)
+cal_rets.m <- melt(cal_rets, id.vars = "group")
+
+#Choose variable for month aggregation
+bp <- ggplot(cal_rets.m, aes(group, value, fill=group)) +
+  geom_boxplot(alpha = 0.5, varwidth = TRUE) +
+  theme(legend.position = "none") +
+  ggtitle("JetBlue Airways Corporation
+NASDAQ: JBLU") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  stat_summary(fun=mean, geom="point", shape=15, size=2, color="red", fill="red") +
+  labs(x=NULL, y=NULL) +
+  #Add % to labels
+  scale_y_continuous(labels = function(x) paste0(x,".00%")) +
+  
+  #Customize theme
+  theme(
+    panel.background = element_rect(fill= "lightblue",
+                                    color = "lightblue",
+                                    size = 0.5, linetype = "solid"),
+   panel.grid.major = element_line(size = 0.5, linetype = 'solid',
+                                   color = "white"),
+   panel.grid.minor = element_line(size = 0.25, linetype = 'solid',
+                                   color = "white"))
+bp
+```
+
+
+```{r}
+library(quantmod)
+library(PerformanceAnalytics)
+library(ggplot2)
+library(reshape2)
+library(iClick)
+library(plyr)
+library(scales)
+#--------------------Data---------------------
+mdate <- "2020-02-03"
+stock_data <- getSymbols.yahoo("AAL", From = mdate, to = Sys.Date(), auto.assign=F)[,4] 
+stock_ret <- periodReturn(stock_data, period='monthly', type='log')
+
+#Create Calendar Returns Table Easily 
+cal_rets <- table.CalendarReturns(stock_ret, digits = 1, as.perc = TRUE )
+#Drop unnecessary columns
+cal_rets$monthly.returns = NULL
+
+df = data.frame(cal_rets)
+#--------------------Box Plot---------------------
+#generic version
+boxplot(df)
+
+#Aggregate By Year or Month
+cal_rets$group <- row.names(cal_rets)
+cal_rets.m <- melt(cal_rets, id.vars = "group")
+
+#Choose variable for month aggregation
+bp <- ggplot(cal_rets.m, aes(group, value, fill=group)) +
+  geom_boxplot(alpha = 0.5, varwidth = TRUE) +
+  theme(legend.position = "none") +
+  ggtitle("American Airlines Group Inc
+NASDAQ: AAL") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  stat_summary(fun=mean, geom="point", shape=15, size=2, color="red", fill="red") +
+  labs(x=NULL, y=NULL) +
+  #Add % to labels
+  scale_y_continuous(labels = function(x) paste0(x,".000%")) +
+  
+  #Customize theme
+  theme(
+    panel.background = element_rect(fill= "lightblue",
+                                    color = "lightblue",
+                                    size = 0.5, linetype = "solid"),
+   panel.grid.major = element_line(size = 0.5, linetype = 'solid',
+                                   color = "white"),
+   panel.grid.minor = element_line(size = 0.25, linetype = 'solid',
+                                   color = "white"))
+bp
+```
+The dots are the outliers and depict the expected range. When people hold or harbor money it hurts the economy and stock market. The stock market is about buying and selling of goods and services, this ensures circulation .i.e. in a situation were money is harbored and John isn't able to pay for his meals at the restaurant, the restaurant owner isn't gonna be able to pay taxes and owes the government. Look at the cycle of a dollar and how many times it touches each person.
+
+
+
+## Data
+
+Monday, as the number of week after week voyages fell for the primary time since the post-Labor Day bump, in the midst of developing concerns over the potential aftermath from the surge in unused COVID-19 cases . 
+
+The number of individuals going through Transportation Security Administration checkpoints fell to a every day normal of 844,217 for the week finished Sunday, from a every day normal of 871,513 the week some time recently, agreeing to a MarketWatch investigation of TSA throughput data. That’s the primary decrease since the week finished Sept. 20. The every day normal had declined back at that point after it got a boost the week some time recently from expanded travel on Labor Day .
+
+The plunge in travelers comes as the day by day count of modern COVID-19 cases within the U.S. rose to records over the end of the week, and a number of European nations moved to fix limitations as the landmass was hit with a spike in cases. The U.S. Worldwide Planes exchange-traded support Planes, -2.13% dropped 5.3% in evening exchanging, whereas the Dow Jones Transportation Normal DJT, -0.13% drooped 2.6% with all six carriers components losing ground.
+
+This chart shows the DIP experienced by Airline during the peak of the COVID-19 pandemic and its trajectory through the year, also displays a merger of the tail and head of;
+
+```{r}
+library(quantmod)
+
+# display a simple bar chart
+getSymbols(c("DAL"))
+barChart(DAL,theme='white.mono',bar.type='hlc')
+
+getSymbols(c("AAL"))
+barChart(AAL,theme='white.mono',bar.type='hlc')
+
+getSymbols(c("LUV"))
+barChart(LUV,theme='white.mono',bar.type='hlc')
+
+getSymbols(c("JBLU"))
+barChart(JBLU,theme='white.mono',bar.type='hlc')
+
+getSymbols(c("SAVE"))
+barChart(SAVE,theme='white.mono',bar.type='hlc')
+
+# display a complex chart
+getSymbols(c("^GSPC"))
+chartSeries( AAL, subset='last 12 months')
+chartSeries( DAL, subset='last 12 months')
+chartSeries( LUV, subset='last 12 months')
+chartSeries( SAVE, subset='last 12 months')
+chartSeries( JBLU, subset='last 12 months')
+addBBands(n = 20, sd = 2, ma = "SMA", draw = 'bands', on = -1)
+
+# get market data for all symbols making up the NASDAQ 100 Index
+Nasdaq100_Symbols <- c("DAL", "SAVE", "LUV", "JBLU", "AAL")
+getSymbols(Nasdaq100_Symbols)
+
+# merge them all together
+nasdaq100 <- data.frame(as.xts(merge(DAL, SAVE, LUV, JBLU, AAL)))
+head(nasdaq100[,1:30],2)
+tail(nasdaq100[,1:30],2)
+
+```
+
+
+The aircraft divisions misfortunes failed to meet expectations the broader stock advertise by a wide edge, as the Dow Jones Mechanical Normal DJIA, +0.16% dropped 735 focuses, or 26% and the S&P 500 record SPX, -0.13% misplaced 2.1%. Among the more-active carrier stocks, American Aircrafts Gather Inc. AAL, -5.23% sank 6.0%, Joined together Carriers Possessions Inc. shed 7.6% UAL, -2.58%, Delta Discuss Lines Inc. dropped 6.3% DAL, -2.06%, JetBlue Aviation routes Corp. JBLU, -4.52% slid 7.0% and Southwest Carriers Co. LUV, -1.97% gave up 4.7%. This ensures return on equity.
+
+$$
+\begin{align}
+Price &\colon Earning \\
+\\Earning_{} &= Value/Shares  \\
+\alpha &\sim 12 months \\
+\beta &\sim Price \\
+\sigma &\sim \beta/\alpha
+\end{align}
+$$
+
+- What to accomplish
+
+ Recirculating of monies into the economy from customer to flight to government and then to the bank. Especially within the aviation sector as that is our focus. The chart below shows the flow of resources in an airline industry.This has been significantly affected by the pandemic as flow resources from  the passenger has been cut off.
+ 
+```{r}
+library(dagitty)
+g <- dagitty('dag {
+    passenger [pos="0,1"]
+    finances [pos="1,1"]
+    airline [pos="2,1"]
+    flight [pos="1,0"]
+  
+    
+    passenger -> finances -> airline 
+    passenger -> flight <- finances 
+    flight <- airline
+}')
+plot(g)
+```
+
+
+- Issues and assumptions
+
+“U.S. stimulus isn't a slam dunk,” composed Raymond James airline investigator Savanthi Syth in a note to clients. “While moderators are striking a more idealistic tone, our Washington approach investigators proceed to see the post-election period as the most punctual chance of finalizing a bargain, with dangers remaining in this situation tied to the race outcome.” On the bright side, the day by day normal of travelers for the weeks finished Sundays come to a post-COVID tall of 871,513 for the week finished Oct. 18, which is about nine times the post-COVID moo of 97,799 for the week finished April 19. The Planes ETF has presently shed 43.9% year to date, but has run up 48% since closing at a post-COVID-19 moo of $12.00 on May 15. A new stimulus check would help boost circulation and particularly help most airline workers who are presently out of job.
+
+![ ](money-bills-dollars-recession-stimulus-cash-4376.jpg)
+
+
+
+##    Conclusion
+
+In conclusion I reiterate and pitch a more direct solution as already implement in most parts of the country. Here is my proposal below;
+
+- COVID-19 Sensitization x Personal Protective Essential (PPE)
+                  
+![](Picture1.png) 
+
+- Understanding the virus and mode of  transmission
+
+To stay ahead, we need to know about the viral disease; Corona virus are zoonotic meaning they are transmitted between animal and people.
+
+- Common signs of infection
+ 
+ Respiratory symptoms ; Fever, cough, shortness of breath In more severe cases, infection can cause pneumonia, severe acute respiratory syndrome, kidney failure and even death. 
+ 
+- Prevention
+
+   - Clean your hands
+   - Avoid close contact
+   - Protect others by staying home if you’re sick
+   - Cover coughs and sneezes
+   - Wear a facemask if you are sick
+   - Clean and disinfect
+
+
+
+- Employee PPE (Personal Protective Essentials)
+
+Due to the uncontrolled outbreak of corona virus COVID-19 and the economic impact this is having on businesses. We would like to propose the use of simple protective gear and items for on site operations for our Project technician’s comfort and effective work process
+
+
+- Gloves
+
+![](GLOVE.png)
+
+
+- Mask
+
+![](MASK.png)
+
+- Wipes
+
+![](WIPES.png)
+These are simple essential gear that if effectively implemented at airports nationwide for all employees  can help boost both essential and non essential travels and help maximize operations and revenue. 
+
+- Commentary
+
+Hi Dr. William Foote thank you so much for blessing us with this special knowledge. Today i will finish with a light hearted question that's been on my mind "If we're not meant to have midnight snacks, why is there a light in the fridge?" Merry Christmas Professor, Happy Holidays.
+
+
+## References
+- http://amunategui.github.io/wallstreet/
+- http://www.quantmod.com/gallery/
+- https://www.stats.govt.nz/large-datasets/csv-files-for-download/
+- https://www.who.int/health-topics/coronavirus
+- https://www.cdc.gov/coronavirus/2019-ncov/about/prevention.html
+- https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6
+
